@@ -70,4 +70,17 @@ scp -i ~/.ssh/id_rsa ryan@k8s1.rms1000watt.com:/home/ryan/.kube/config ~/.kube/c
 ```bash
 helmfile -f helmfile.d/metrics-server.yaml apply
 helmfile -f helmfile.d/ingress-nginx.yaml apply
+
+kubectl create ns prod
+env=prod helmfile -f helmfile.d/echo-server.yaml apply
+
+# update /etc/hosts
+# 192.168.1.135 echo.rms1000watt.com
+
+curl echo.rms1000watt.com
 ```
+
+## TODO
+
+- create k8s users
+- figure out if there's a better way to handle ingress instead of host network ingress-nginx daemonset

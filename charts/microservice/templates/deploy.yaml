@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        run: {{ .Values.name }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.pod.imageName }}:{{ .Values.pod.imageTag }}
+        imagePullPolicy: {{ .Values.pod.imagePullPolicy }}
+        env:
+        - name: ENV
+          value: {{ .Release.Namespace }}
+{{- range $key, $value := $.Values.env }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.targetPort }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.pod.readinessProbe.httpGet.path }}
+            port: {{ .Values.targetPort }}
+          timeoutSeconds: {{ .Values.pod.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.pod.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.pod.readinessProbe.failureThreshold }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.pod.livenessProbe.httpGet.path }}
+            port: {{ .Values.targetPort }}
+          timeoutSeconds: {{ .Values.pod.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.pod.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.pod.livenessProbe.failureThreshold }}
+        resources:
+{{ toYaml .Values.pod.resources | indent 10 }}
+      dnsPolicy: {{ .Values.pod.dnsPolicy }}
+      restartPolicy: {{ .Values.pod.restartPolicy }}
+      schedulerName: {{ .Values.pod.schedulerName }}
+      terminationGracePeriodSeconds: {{ .Values.pod.terminationGracePeriodSeconds }}
