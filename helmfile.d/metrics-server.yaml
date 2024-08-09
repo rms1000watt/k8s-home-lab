@@ -1,0 +1,14 @@
+# helmfile -f helmfile.d/metrics-server.yaml diff
+
+repositories:
+- name: metrics-server
+  url: https://kubernetes-sigs.github.io/metrics-server/
+
+releases:
+- name: metrics-server
+  namespace: kube-system
+  chart: metrics-server/metrics-server
+  version: 3.12.1
+  values:
+  - args:
+      - --kubelet-insecure-tls=true
