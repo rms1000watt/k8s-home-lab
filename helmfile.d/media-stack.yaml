@@ -1,0 +1,165 @@
+# env=prod helmfile -f helmfile.d/media-stack.yaml diff
+
+releases:
+- name: jellyfin
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: jellyfin
+    port: 8096
+    targetPort: 8096
+    pod:
+      imageName: jellyfin/jellyfin
+      imageTag: latest
+      resources:
+        limits:
+          cpu: 2
+          memory: 512Mi
+        requests:
+          cpu: 2
+          memory: 512Mi
+    svc:
+      nodePort: 30150
+    ing:
+      hostname: jellyfin.rms1000watt.com
+
+- name: sonarr
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: sonarr
+    port: 8989
+    targetPort: 8989
+    pod:
+      imageName: linuxserver/sonarr
+      imageTag: latest
+      env:
+        PUID: "1057"
+        PGID: "1056"
+      resources:
+        limits:
+          cpu: 1
+          memory: 250Mi
+        requests:
+          cpu: 1
+          memory: 250Mi
+    svc:
+      nodePort: 30151
+    ing:
+      hostname: sonarr.rms1000watt.com
+
+- name: radarr
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: radarr
+    port: 7878
+    targetPort: 7878
+    pod:
+      imageName: linuxserver/radarr
+      imageTag: latest
+      env:
+        PUID: "1057"
+        PGID: "1056"
+      resources:
+        limits:
+          cpu: 1
+          memory: 250Mi
+        requests:
+          cpu: 1
+          memory: 250Mi
+    svc:
+      nodePort: 30152
+    ing:
+      hostname: radar.rms1000watt.com
+
+- name: jackett
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: jackett
+    port: 9117
+    targetPort: 9117
+    pod:
+      imageName: linuxserver/jackett
+      imageTag: latest
+      env:
+        PUID: "1057"
+        PGID: "1056"
+      resources:
+        limits:
+          cpu: 1
+          memory: 250Mi
+        requests:
+          cpu: 1
+          memory: 250Mi
+    svc:
+      nodePort: 30153
+    ing:
+      hostname: jackett.rms1000watt.com
+
+- name: qbittorrent
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: qbittorrent
+    port: 8080
+    targetPort: 8080
+    pod:
+      imageName: linuxserver/qbittorrent
+      imageTag: latest
+      env:
+        PUID: "1057"
+        PGID: "1056"
+      resources:
+        limits:
+          cpu: 1
+          memory: 2Gi
+        requests:
+          cpu: 1
+          memory: 2Gi
+    svc:
+      nodePort: 30154
+    ing:
+      hostname: qbittorrent.rms1000watt.com
+
+- name: gluetun
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/microservice
+  # wait: true
+  # atomic: true
+  values:
+  - name: gluetun
+    port: 9090
+    targetPort: 9090
+    pod:
+      imageName: qmcgaw/gluetun
+      imageTag: latest
+      env:
+        VPNSP: "pia"
+        COUNTRY: "USA"
+      resources:
+        limits:
+          cpu: 1
+          memory: 250Mi
+        requests:
+          cpu: 1
+          memory: 250Mi
+      securityContext:
+        capabilities:
+          add:
+            - NET_ADMIN
+    svc:
+      nodePort: 30155
+    ing:
+      hostname: gluetun.rms1000watt.com

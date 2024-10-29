@@ -38,13 +38,16 @@ pod:
   terminationGracePeriodSeconds: 30
 
 svc:
+  enabled: true
   nodePort: overwrittenByHelmfile # Careful with this. Do not squash a port used by another application in the cluster
   nodePortDynamicPort: false
 
 hpa:
+  enabled: true
   minReplicas: 1
   maxReplicas: 3
   cpuAverageUtilization: 65
 
 ing:
+  enabled: true
   hostname: overwrittenByHelmfile

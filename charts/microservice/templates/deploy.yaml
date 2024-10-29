@@ -41,6 +41,10 @@ spec:
           failureThreshold: {{ .Values.pod.livenessProbe.failureThreshold }}
         resources:
 {{ toYaml .Values.pod.resources | indent 10 }}
+        {{- if .Values.pod.securityContext }}
+        securityContext:
+{{ toYaml .Values.pod.securityContext | indent 10 }}
+        {{- end }}
       dnsPolicy: {{ .Values.pod.dnsPolicy }}
       restartPolicy: {{ .Values.pod.restartPolicy }}
       schedulerName: {{ .Values.pod.schedulerName }}

@@ -68,3 +68,6 @@ sudo crictl ps
 # See nodes and pods
 kubectl get no
 kubectl -n kube-system get po
+
+# Get the kubeadm join command
+kubeadm token create --print-join-command
