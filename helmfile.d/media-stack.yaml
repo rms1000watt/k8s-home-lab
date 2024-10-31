@@ -18,7 +18,7 @@ releases:
           cpu: 2
           memory: 512Mi
         requests:
-          cpu: 2
+          cpu: 1
           memory: 512Mi
     svc:
       nodePort: 30150
@@ -38,14 +38,14 @@ releases:
       imageName: linuxserver/sonarr
       imageTag: latest
       env:
-        PUID: "1057"
-        PGID: "1056"
+        PUID: '"1057"'
+        PGID: '"1056"'
       resources:
         limits:
           cpu: 1
           memory: 250Mi
         requests:
-          cpu: 1
+          cpu: 512m
           memory: 250Mi
     svc:
       nodePort: 30151
@@ -65,14 +65,14 @@ releases:
       imageName: linuxserver/radarr
       imageTag: latest
       env:
-        PUID: "1057"
-        PGID: "1056"
+        PUID: '"1057"'
+        PGID: '"1056"'
       resources:
         limits:
           cpu: 1
           memory: 250Mi
         requests:
-          cpu: 1
+          cpu: 512m
           memory: 250Mi
     svc:
       nodePort: 30152
@@ -92,14 +92,14 @@ releases:
       imageName: linuxserver/jackett
       imageTag: latest
       env:
-        PUID: "1057"
-        PGID: "1056"
+        PUID: '"1057"'
+        PGID: '"1056"'
       resources:
         limits:
           cpu: 1
           memory: 250Mi
         requests:
-          cpu: 1
+          cpu: 512m
           memory: 250Mi
     svc:
       nodePort: 30153
@@ -118,33 +118,29 @@ releases:
     pod:
       imageName: linuxserver/qbittorrent
       imageTag: latest
+      readinessProbe:
+        disabled: true
+      livenessProbe:
+        disabled: true
       env:
-        PUID: "1057"
-        PGID: "1056"
+        PUID: '"1057"'
+        PGID: '"1056"'
       resources:
         limits:
           cpu: 1
           memory: 2Gi
         requests:
-          cpu: 1
+          cpu: 512m
           memory: 2Gi
-    svc:
-      nodePort: 30154
-    ing:
-      hostname: qbittorrent.rms1000watt.com
-
-- name: gluetun
-  namespace: {{ requiredEnv "env" }}
-  chart: ../charts/microservice
-  # wait: true
-  # atomic: true
-  values:
-  - name: gluetun
-    port: 9090
-    targetPort: 9090
-    pod:
+    extraPod:
+      enabled: true
+      name: gluetun
       imageName: qmcgaw/gluetun
       imageTag: latest
+      readinessProbe:
+        disabled: true
+      livenessProbe:
+        disabled: true
       env:
         VPNSP: "pia"
         COUNTRY: "USA"
@@ -153,13 +149,44 @@ releases:
           cpu: 1
           memory: 250Mi
         requests:
-          cpu: 1
+          cpu: 512m
           memory: 250Mi
       securityContext:
         capabilities:
           add:
             - NET_ADMIN
     svc:
-      nodePort: 30155
+      nodePort: 30154
     ing:
-      hostname: gluetun.rms1000watt.com
+      hostname: qbittorrent.rms1000watt.com
+
+# - name: gluetun
+#   namespace: {{ requiredEnv "env" }}
+#   chart: ../charts/microservice
+#   # wait: true
+#   # atomic: true
+#   values:
+#   - name: gluetun
+#     port: 9090
+#     targetPort: 9090
+#     pod:
+#       imageName: qmcgaw/gluetun
+#       imageTag: latest
+#       env:
+#         VPNSP: "pia"
+#         COUNTRY: "USA"
+#       resources:
+#         limits:
+#           cpu: 1
+#           memory: 250Mi
+#         requests:
+#           cpu: 1
+#           memory: 250Mi
+#       securityContext:
+#         capabilities:
+#           add:
+#             - NET_ADMIN
+#     svc:
+#       nodePort: 30155
+#     ing:
+#       hostname: gluetun.rms1000watt.com

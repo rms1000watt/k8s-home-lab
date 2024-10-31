@@ -1,3 +1,5 @@
+
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,12 +21,15 @@ spec:
         env:
         - name: ENV
           value: {{ .Release.Namespace }}
-{{- range $key, $value := $.Values.env }}
+{{- range $key, $value := $.Values.pod.env }}
         - name: {{ $key }}
           value: {{ $value }}
 {{- end }}
+        {{- if .Values.targetPort }}
         ports:
         - containerPort: {{ .Values.targetPort }}
+        {{- end }}
+        {{- if (not .Values.pod.readinessProbe.disabled) }}
         readinessProbe:
           httpGet:
             path: {{ .Values.pod.readinessProbe.httpGet.path }}
@@ -32,6 +37,8 @@ spec:
           timeoutSeconds: {{ .Values.pod.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.pod.readinessProbe.periodSeconds }}
           failureThreshold: {{ .Values.pod.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if (not .Values.pod.livenessProbe.disabled) }}
         livenessProbe:
           httpGet:
             path: {{ .Values.pod.livenessProbe.httpGet.path }}
@@ -39,12 +46,53 @@ spec:
           timeoutSeconds: {{ .Values.pod.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.pod.livenessProbe.periodSeconds }}
           failureThreshold: {{ .Values.pod.livenessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.pod.resources | indent 10 }}
         {{- if .Values.pod.securityContext }}
         securityContext:
 {{ toYaml .Values.pod.securityContext | indent 10 }}
         {{- end }}
+      {{- if .Values.extraPod.enabled }}
+      - name: {{ .Values.extraPod.name }}
+        image: {{ .Values.extraPod.imageName }}:{{ .Values.extraPod.imageTag }}
+        imagePullPolicy: {{ .Values.extraPod.imagePullPolicy }}
+        env:
+        - name: ENV
+          value: {{ .Release.Namespace }}
+{{- range $key, $value := $.Values.extraPod.env }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
+        {{- if .Values.extraPod.targetPort }}
+        ports:
+        - containerPort: {{ .Values.extraPod.targetPort }}
+        {{- end }}
+        {{- if (not .Values.extraPod.readinessProbe.disabled) }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.extraPod.readinessProbe.httpGet.path }}
+            port: {{ .Values.targetPort }}
+          timeoutSeconds: {{ .Values.extraPod.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.extraPod.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.extraPod.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if (not .Values.extraPod.livenessProbe.disabled) }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.extraPod.livenessProbe.httpGet.path }}
+            port: {{ .Values.targetPort }}
+          timeoutSeconds: {{ .Values.extraPod.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.extraPod.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.extraPod.livenessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.extraPod.resources | indent 10 }}
+        {{- if .Values.extraPod.securityContext }}
+        securityContext:
+{{ toYaml .Values.extraPod.securityContext | indent 10 }}
+        {{- end }}
+      {{- end }}
       dnsPolicy: {{ .Values.pod.dnsPolicy }}
       restartPolicy: {{ .Values.pod.restartPolicy }}
       schedulerName: {{ .Values.pod.schedulerName }}
