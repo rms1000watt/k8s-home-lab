@@ -1,0 +1,25 @@
+# helmfile -f helmfile.d/rook.yaml diff
+
+repositories:
+- name: rook-release
+  url: https://charts.rook.io/release
+
+releases:
+- name: rook
+  # namespace: prod
+  chart: rook-release/rook-ceph-cluster
+  # version: 4.11.1
+  # values:
+  # - image:
+  #     repository: docker.io/rook/ceph
+  #     tag: master
+  #     pullPolicy: IfNotPresent
+  #   crds:
+  #     enabled: true
+  #   resources:
+  #     limits:
+  #       memory: 512Mi
+  #     requests:
+  #       cpu: 200m
+  #       memory: 128Mi
+    # operatorNamespace: prod

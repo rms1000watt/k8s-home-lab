@@ -51,3 +51,6 @@ sudo reboot -h now
 # Run kubeadm
 sudo kubeadm join REDACTED:6443 --token REDACTED \
   --discovery-token-ca-cert-hash REDACTED
+
+# Reinstall Calico
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico.yaml
