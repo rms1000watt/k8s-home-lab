@@ -1,0 +1,19 @@
+# env=prod helmfile -f helmfile.d/mongodb.yaml diff
+
+releases:
+- name: mongodb
+  namespace: {{ requiredEnv "env" }}
+  chart: ../charts/mongodb
+  wait: true
+  atomic: true
+  # values:
+  # - name: echo-server
+  #   port: 5678
+  #   targetPort: 5678
+  #   pod:
+  #     imageName: hashicorp/http-echo
+  #     imageTag: latest
+  #   svc:
+  #     nodePort: 30100
+  #   ing:
+  #     hostname: echo.rms1000watt.com

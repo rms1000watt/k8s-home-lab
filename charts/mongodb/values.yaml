@@ -1,0 +1,88 @@
+# name: overwrittenByHelmfile
+
+# port: overwrittenByHelmfile
+# targetPort: overwrittenByHelmfile
+
+# pod:
+#   imageName: overwrittenByHelmfile
+#   imageTag: overwrittenByHelmfile
+
+#   resources:
+#     limits:
+#       cpu: 500m
+#       memory: 250Mi
+#     requests:
+#       cpu: 250m
+#       memory: 100Mi
+
+#   livenessProbe:
+#     disabled: false
+#     httpGet:
+#       path: /health/
+#     timeoutSeconds: 1
+#     periodSeconds: 15
+#     failureThreshold: 2
+
+#   readinessProbe:
+#     disabled: false
+#     httpGet:
+#       path: /health/
+#     timeoutSeconds: 1
+#     periodSeconds: 15
+#     failureThreshold: 2
+
+#   dnsPolicy: ClusterFirst
+#   imagePullPolicy: IfNotPresent
+#   restartPolicy: Always
+#   schedulerName: default-scheduler
+#   terminationGracePeriodSeconds: 30
+
+# extraPod:
+#   enabled: false
+#   imageName: overwrittenByHelmfile
+#   imageTag: overwrittenByHelmfile
+
+#   resources:
+#     limits:
+#       cpu: 500m
+#       memory: 250Mi
+#     requests:
+#       cpu: 250m
+#       memory: 100Mi
+
+#   livenessProbe:
+#     disabled: false
+#     httpGet:
+#       path: /health/
+#     timeoutSeconds: 1
+#     periodSeconds: 15
+#     failureThreshold: 2
+
+#   readinessProbe:
+#     disabled: false
+#     httpGet:
+#       path: /health/
+#     timeoutSeconds: 1
+#     periodSeconds: 15
+#     failureThreshold: 2
+
+#   dnsPolicy: ClusterFirst
+#   imagePullPolicy: IfNotPresent
+#   restartPolicy: Always
+#   schedulerName: default-scheduler
+#   terminationGracePeriodSeconds: 30
+
+# svc:
+#   enabled: true
+#   nodePort: overwrittenByHelmfile # Careful with this. Do not squash a port used by another application in the cluster
+#   nodePortDynamicPort: false
+
+# hpa:
+#   enabled: true
+#   minReplicas: 1
+#   maxReplicas: 3
+#   cpuAverageUtilization: 65
+
+# ing:
+#   enabled: true
+#   hostname: overwrittenByHelmfile
